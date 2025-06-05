@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Zonas da Casa</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 24px;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="zona"></div>
+
+<script>
+  function getZonaHoje() {
+    const hoje = new Date();
+    const dia = hoje.getDate();
+    const mes = hoje.getMonth();
+    const ano = hoje.getFullYear();
+
+    const primeiroDia = new Date(ano, mes, 1);
+    const primeiroDomingo = new Date(primeiroDia);
+    while (primeiroDomingo.getDay() !== 0) {
+      primeiroDomingo.setDate(primeiroDomingo.getDate() + 1);
+    }
+
+    const segundaFeira = (semana, mesOffset = 0) => {
+      const data = new Date(ano, mes + mesOffset, 1);
+      let count = 0;
+      while (true) {
+        if (data.getDay() === 1) count++;
+        if (count === semana) break;
+        data.setDate(data.getDate() + 1);
+      }
+      return data;
+    };
+
+    const primeiraSegunda = segundaFeira(1);
+    const segundaSegunda = segundaFeira(2);
+    const terceiraSegunda = segundaFeira(3);
+
+    // Última segunda
+    let ultimaSegunda = new Date(ano, mes + 1, 0); // último dia do mês
+    while (ultimaSegunda.getDay() !== 1) {
+      ultimaSegunda.setDate(ultimaSegunda.getDate() - 1);
+    }
+
+    let zona = "";
+
+    if (hoje <= primeiroDomingo) {
+      zona = "Zona 1: Sala de estar / jantar";
+    } else if (hoje >= primeiroDia && hoje < segundaSegunda) {
+      zona = "Zona 2: Cozinha";
+    } else if (hoje >= segundaSegunda && hoje < terceiraSegunda) {
+      zona = "Zona 3: Banheiro";
+    } else if (hoje >= terceiraSegunda && hoje < ultimaSegunda) {
+      zona = "Zona 4: Quarto principal / Quarto de hóspedes";
+    } else if (hoje >= ultimaSegunda) {
+      zona = "Zona 5: Lavanderia";
+    }
+
+    document.getElementById("zona").innerText = zona;
+  }
+
+  getZonaHoje();
+</script>
+
+</body>
+</html>
